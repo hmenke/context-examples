@@ -1,0 +1,2 @@
+services: docker
+script: docker run -v ${TRAVIS_BUILD_DIR}:/travis -w /travis -it contextgarden/beta ./build.sh
