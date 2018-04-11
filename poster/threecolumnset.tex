@@ -1,0 +1,145 @@
+\setuppapersize[A0][A0]
+
+\setupbodyfont[sans,25pt]
+
+\setuplayout
+  [cutspace=5cm,
+   leftmargin=4cm,
+   leftmargindistance=1cm,
+   width=middle,
+   rightmargindistance=1cm,
+   rightmargin=4cm,
+   backspace=5cm,
+   %
+   topspace=4cm,
+   header=10cm,
+   headerdistance=5cm,
+   height=middle,
+   footerdistance=0pt,
+   footer=0pt,
+   bottomspace=5cm]
+
+\setupbackgrounds
+  [page]
+  [background=color,backgroundcolor=gray]
+
+\definecolumnset
+  [threecolumn]
+  [n=3]
+
+\setupcolumnset
+  [threecolumn][each]
+  [distance=3cm,
+   background=color,
+   backgroundcolor=white,
+   backgroundoffset=1cm,
+   frame=on,
+   frameoffset=1cm,
+   rulethickness=1pt]
+\setupcolumnset[threecolumn][1][distance=0pt]
+
+\definestyle
+  [titlestyle]
+  [style={\tfd\setupinterlinespace\WORD}]
+\definestyle
+  [authorstyle]
+  [style={\tfc\setupinterlinespace}]
+\definestyle
+  [institutestyle]
+  [style={\tfb\setupinterlinespace}]
+
+\startsetups header:title
+  \startframed
+    [frame=off,
+     height=\headerheight,
+     width=\dimexpr\makeupwidth-10cm\relax,
+     align=middle]
+    \titlestyle{\documentvariable{metadata:title}\par}
+
+    \vfill
+
+    \authorstyle{\documentvariable{metadata:author}\par}
+
+    \vfill
+
+    \institutestyle{\documentvariable{metadata:institute}\par}
+  \stopframed
+\stopsetups
+
+\startsetups header:logo
+  \startframed
+    [frame=off,
+     height=\headerheight,
+     width=10cm,
+     align=middle]
+    \documentvariable{metadata:logo}
+  \stopframed
+\stopsetups
+
+\setupheadertexts[\setups{header:logo}][\setups{header:title}]
+\setuppagenumbering[location=]
+
+\definehead
+  [block]
+  [subject]  
+  [style=\bfa,
+   align=middle,
+   before={\blank[line]},
+   after={\blank[line]},
+   textcommand={\framed[width=.9\textwidth]}]
+
+\startdocument
+  [
+    metadata:title={My really long and super awesome research title that spans
+      multiple lines},
+    metadata:author={Good guys},
+    metadata:institute={Institute of the Holy Cow, Ridderstraat 27, 8061GH
+      Hasselt, The Netherlands},
+    metadata:logo={\externalfigure[cow][width=10cm]},
+  ]
+
+\startcolumnset[threecolumn]
+
+  \startblock[title=Introduction]
+    \input lorem
+  \stopblock
+
+  \startblock[title=Knuth]
+    \input knuth
+  \stopblock
+
+  \startblock[title=Ward]
+    \input ward
+  \stopblock
+
+\column
+
+  \startblock[title=Zapf]
+    \input zapf
+  \stopblock
+
+  \startplacefigure[title={\input zapf\par}]
+    \externalfigure[cow][width=\textwidth]
+  \stopplacefigure
+
+  \startblock[title=Hawking]
+    \input hawking
+  \stopblock
+
+\column
+
+  \startblock[title=Douglas]
+    \input Douglas
+  \stopblock
+
+  \startblock[title=Bryson]
+    \input bryson
+  \stopblock
+
+  \startplacefigure[title={\input bryson\par}]
+    \externalfigure[cow][width=\textwidth]
+  \stopplacefigure
+
+\stopcolumnset
+
+\stopdocument

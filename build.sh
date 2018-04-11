@@ -11,6 +11,7 @@ for dir in *; do
                 context --nonstopmode "${file}"
             fi
         done
+        cd -
     fi
 done
 
