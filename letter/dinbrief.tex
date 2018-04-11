@@ -1,0 +1,36 @@
+\usemodule[letter]
+
+\mainlanguage[de]
+\useletterstyle[dinb]
+
+\setupletterlayer
+  [reference]
+  [list={name,phone,email,date}]
+
+\setupletter
+  [name={Max Mustermann},
+   phone={01234/567890},
+   email={max.mustermann@example.com},
+   date={\currentdate}]
+
+\setupletter
+  [toname={Hans Hansen},
+   toaddress={Zielgasse 23\\34789 New Mustertown}]
+
+\setupletter
+  [fromname={\correspondenceparameter{name}},
+   fromaddress={Musterstraße 12\\12345 Musterstadt}]
+
+\starttext
+
+\startletter
+  [opening={Sehr geehrte Damen und Herren,},
+   subject={Grund des Anschreibens},
+   closing={Mit freundlichen Grüßen},
+   signature={\correspondenceparameter{name}}]
+
+  \input aesop-de
+
+\stopletter
+
+\stoptext
