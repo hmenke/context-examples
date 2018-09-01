@@ -4,7 +4,7 @@ On the [mailing list][list] (sign up, do it!) and on [TeX - LaTeX
 Stack Exchange][texsx] (*abbr.:* TeX.SX) I often read the complaint
 that the ConTeXt documentation is bad/old/incomplete.  I
 wholeheartedly disagree.  However, I have to admit that ConTeXt
-documentation is actually quite hard to *find*.  That is why I have
+documentation is actually quite *hard to find*.  That is why I have
 come to the conclusion that a definitive guide to the, in my opinion
 outstanding, ConTeXt documentation is necessary.  I structured this
 guide in such a way that a beginner can start reading the linked
@@ -13,8 +13,8 @@ resources from top to bottom.
 Even though you read the words “beta” and “experimental” in many
 places, the versions provided can be considered production quality
 because Pragma ADE relies on these versions for commercial purposes.
-If you have a deadline coming up I would recommend not updating
-ConTeXt until you have finished your work, because some mechanism are
+If you have a deadline coming up, I would recommend not updating
+ConTeXt until you have finished your work, because some mechanisms are
 moving targets anyway.
 
 [list]: https://mailman.ntg.nl/mailman/listinfo/ntg-context
@@ -51,8 +51,8 @@ here is how.
 2. **[Creating a clean presentation style in 40 commits][40-commits]**
     An amazing tutorial by Aditya Mahajan where a set of presentation
     slides is built step by step.  You can either browse the commits
-    on GitHub or use the `git-walk` tool, instructions are provided on
-    [Aditya's blog][blog-post].  This tutorial equipped me with the
+    on GitHub or use the `git-walk` tool.  Instructions are provided
+    on [Aditya's blog][blog-post].  This tutorial equipped me with the
     basic understanding of how to customize the most relevant elements
     of the document.
 
@@ -79,14 +79,14 @@ compose your first documents.
 
 ## Advanced
 
-I don't recommend to try to read these references as a whole.  There
-is no way you can memorize all that stuff.  Just skim through it to
-get an idea of what is there, so you can come back and read in detail
-when you actually need it.
+I don't recommend that you try to read these references as a whole.
+There is no way you can memorize all that stuff.  Just skim through it
+to get an idea of what is there, so you can come back and read in
+detail when you actually need it.
 
 You have probably started writing your own macros and are getting in
 contact with the ConTeXt core and are wondering what all those weird
-`\s!`, `\c!`, `\v!`, `\??` amd `\@@` is.  Then you might enjoy the
+`\s!`, `\c!`, `\v!`, `\??` and `\@@` are.  Then you might enjoy the
 [System Macros][system] page in the ConTeXt Garden Wiki.
 
 [system]: http://wiki.contextgarden.net/System_Macros
@@ -95,7 +95,7 @@ contact with the ConTeXt core and are wondering what all those weird
 
 - **[Fonts out of ConTeXt][fonts-mkiv]** a.k.a “the new font manual”
     supersedes the old [Fonts chapter][co-fonts].  Once in a while you
-    want to tweak things like ligatures, kerning, protusion, or even
+    want to tweak things like ligatures, kerning, protrusion, or even
     want to do complicated things like defining a virtual font to
     display your custom characters.  This is the go-to resource for
     all those complicated font-related questions.
@@ -133,10 +133,10 @@ contact with the ConTeXt core and are wondering what all those weird
 - **[Bibliographies the ConTeXt way][mkiv-publications]** Probably
     you read about `\setupbibtex` in [ConTeXt Mark IV an
     excursion][ma-cb-en].  This mechanism has been superseded by the
-    new `btx` mechanism which acts as a replacement for BibTeX
+    new `btx` mechanism which acts as a replacement for BibTeX,
     entirely implemented in Lua.  Thanks to `btx` ConTeXt does not
     depend on external programs for processing bibliographies.
-    However, it only provides two different styles, `apa` as an
+    However, it only provides two different styles: `apa` as an
     author-year style and `aps` as a numeric style.  A verbose style
     named [`ieee`][publ-imp-ieee] is in development.
 
@@ -150,12 +150,12 @@ contact with the ConTeXt core and are wondering what all those weird
     not surprising to find that there is amazing interaction between
     ConTeXt and Lua and in principle you can typeset whole documents
     in Lua.  Some things, like the PDF backend, have spare or don't
-    have macro level interfaces at all.  Such low-level mechanisms are
+    have macro-level interfaces at all.  Such low-level mechanisms are
     usually accessible in Lua.
 
 [cld-mkiv]: http://www.pragma-ade.nl/general/manuals/cld-mkiv.pdf
 
-### Grahpics
+### Graphics
 
 - **[Metafun][metafun]** Metafun is a set of MetaPost macros,
     specifically tailored for the interaction with ConTeXt.  You can
@@ -212,8 +212,8 @@ contact with the ConTeXt core and are wondering what all those weird
     - [on and on][onandon] (current working report)
 
     [The history of LuaTeX][mk] has mostly historical relevance
-    because a lot of features described in here are documented
-    elsewhere in much more details, like [OpenType fonts][fonts-mkiv],
+    because a lot of features described in there are documented
+    elsewhere in much more detail, like [OpenType fonts][fonts-mkiv],
     [Metafun][metafun], and [XML][xml-mkiv].
 
     The other documents give a very in-depth view of all the internals
@@ -255,7 +255,7 @@ ConTeXt standalone and TeX Live.  The PDFs can be found in
 sources in [`doc/context/sources/general/manuals/`][sources] (the
 links point to the ConTeXt GitHub mirror).
 
-In TeX Live manuals can also be opened using the `texdoc` tool by
+In TeX Live, manuals can also be opened using the `texdoc` tool by
 providing the name of the PDF as an argument, e.g. `texdoc metafun-p`
 will open the MetaFun manual.
 
@@ -263,15 +263,16 @@ will open the MetaFun manual.
 [sources]: https://github.com/contextgarden/context-mirror/tree/beta/doc/context/sources/general/manuals
 
 There are two other manuals which I see mentioned in some places and I
-want to given my comments on these.
+want to give my comments on these.
 
-- **[Typographic Programming][style]** This should grow into a manual
-    about general aspects of document design and how to translate
-    design into style by the means of automated typesetting.  At the
-    moment it is unfinished and is mostly about microtypographic
-    features and page layout but doesn't go beyond the much more
-    complete [Fonts out of ConTeXt][fonts-mkiv] and [It's in the
-    details][details].  It also hasn't been updated in some time.
+- **[Typographic Programming][style]** This is supposed to grow into a
+    manual about general aspects of document design and how to
+    translate design into style by the means of automated typesetting.
+    At the moment it is unfinished and is mostly about
+    microtypographic features and page layout but doesn't go beyond
+    the much more complete [Fonts out of ConTeXt][fonts-mkiv] and
+    [It's in the details][details].  It also hasn't been updated in
+    a while.
 
 - **[ConTeXt reference manual][contextref]** This was supposed to be a
     comprehensive introduction to ConTeXt and could have evolved into
