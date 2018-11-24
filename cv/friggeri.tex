@@ -1,0 +1,211 @@
+\setuppapersize[letter]
+
+\setupbodyfont[dejavu-condensed,sans,8pt]
+
+\setuppagenumbering
+  [location={footer,inleft}]
+
+\setupinteraction
+  [state=start,
+   color=,
+   contrastcolor=,
+   style=]
+
+\setuplayout
+  [% horizontal
+   backspace=2.5in,
+   leftmargin=1.75in,
+   leftmargindistance=0.25in,
+   width=5.5in,
+   rightmargin=0in,
+   % vertical
+   topspace=0pt,
+   header=1.2in,
+   headerdistance=.1in,
+   height=middle,
+   footerdistance=0pt,
+   footer=\lineheight,
+   bottomspace=.5in]
+
+\setupmarginblock
+  [location=left,
+   width=\leftmarginwidth,
+   align={flushright,broad}]
+
+\definelayer
+  [pagebackground]
+  [x=0pt,
+   y=0pt,
+   width=\paperwidth,
+   height=\paperheight]
+
+\setupbackgrounds
+  [page]
+  [background=pagebackground]
+
+\defineitemgroup
+  [timeline]
+  [before={\blank[back]},
+   inbetween=,
+   width=6em]
+
+\setuplines[before=,after=]
+
+\define[1]\heading{%
+  \dontleavehmode{\bfb\setupinterlinespace\strut#1}%
+  \blank[small,samepage]
+}
+\define[1]\subheading{%
+  \dontleavehmode{\bfa\setupinterlinespace\strut#1}%
+  \blank[small,samepage]
+}
+
+\starttext
+
+\setlayerframed
+  [pagebackground]
+  []
+  [background=color,
+   framecolor=darkgray,
+   backgroundcolor=darkgray,
+   foregroundcolor=white,
+   width=\paperwidth,
+   height=\dimexpr\topspace+\headerheight\relax]
+  {%
+    \dontleavehmode{\tfd john\bold{smith}}\blank[medium]
+    junior business analyst
+  }
+
+\startmarginblock
+  \heading{contact}
+  \startlines
+    123 Broadway
+    City, State 12345
+    Country
+    ~
+    +0 (000) 111 1111
+    +0 (000) 111 1112
+    ~
+    \goto{john@smith.com}[url(mailto:john@smith.com)]
+    \goto{http://www.smith.com}[url(http://www.smith.com)]
+    \goto{fb://jsmith}[url(http://facebook.com/johnsmith)]
+  \stoplines
+
+  \heading{languages}
+  \startlines
+    english mother tongue
+    spanish \& italian fluency
+  \stoplines
+
+  \heading{programming}
+  \startlines
+    \color[red]{♥} JavaScript
+    Python, C++, PHP
+    CSS3 \& HTML5
+  \stoplines
+\stopmarginblock
+
+\heading{\color[cyan]{edu}cation}
+
+\starttimeline
+\sym{2011--2012} \bold{Masters} of Commerce\hfill
+  \color[darkgray]{\tfx The University of California, Berkeley}
+
+  \emph{Money Is The Root Of All Evil -- Or Is It?}
+
+  This thesis explored the idea that money has been the cause of
+  untold anguish and suffering in the world. I found that it has, in
+  fact, not.
+
+\sym{2007--2008} \bold{Bachelor} of Business Studies\hfill
+  \color[darkgray]{\tfx The University of California, Berkeley}
+
+  Specialization in Commerce
+\stoptimeline
+
+\heading{\color[magenta]{exp}erience}
+
+\subheading{Full Time}
+
+\starttimeline
+\sym{2012--Now} \bold{LEHMAN BROTHERS}\hfill
+  \color[darkgray]{\tfx Los Angeles, California}
+
+  \emph{1\high{st} Year Analyst}
+
+  Developed spreadsheets for risk analysis on exotic derivatives on a
+  wide array of commodities (ags, oils, precious and base metals),
+  managed blotter and secondary trades on structured notes, liaised
+  with Middle Office, Sales and Structuring for bookkeeping.\par
+  Detailed achievements:
+  \startitemize[packed]
+  \item Learned how to make amazing coffee
+  \item Finally determined the reason for PC LOAD LETTER:
+    \startitemize[packed]
+    \item Paper jam
+    \item Software issues:
+      \startitemize[packed]
+      \item Word not sending the correct data to printer
+      \item Windows trying to print in letter format
+      \stopitemize
+    \item Coffee spilled inside printer
+    \stopitemize
+  \item Broke the office record for number of kitten pictures in cubicle
+  \item Learned how to make more amazing coffee on a new machine
+  \stopitemize
+\stoptimeline
+
+\subheading{Part Time}
+
+\starttimeline
+\sym{2010--2011} \bold{LEHMAN BROTHERS}\hfill
+  \color[darkgray]{\tfx London, United Kingdom}
+
+  \emph{Summer Intern}
+
+  Received pre-placed offer from the Exotics Trading Desk as a result
+  of very positive reviews. Rated "truly distinctive" for Analytical
+  Skills and Teamwork.
+
+\sym{2008-2009} \bold{Buy More}\hfill
+  \color[darkgray]{\tfx Burbank, California}
+
+  \emph{Computer Repair Specialist}
+
+  Worked in the Nerd Herd and helped to solve computer problems by
+  asking customers to turn their computers off and on again.
+\stoptimeline
+
+\heading{\color[orange]{awa}rds}
+
+\starttimeline
+\sym{2011} \bold{Postgraduate Scholarship}\hfill
+  \color[darkgray]{\tfx School of Business, The University of California}
+
+  Awarded to the top student in their final year of a Bachelors
+  degree. Mastered the art of filing accurate TPS reports.
+\stoptimeline
+
+\heading{\color[green]{com}munication skills}
+
+\starttimeline
+\sym{2011} \bold{Oral Presentation}\hfill
+  \color[darkgray]{\tfx California Business Conference}
+
+  Presented the research I conducted for my Masters of Commerce
+  degree.
+
+\sym{2010} \bold{Poster}\hfill
+  \color[darkgray]{\tfx Annual Business Conference, Oregon}
+
+  As part of the course work for BUS320, I created a poster analyzing
+  several local businesses and presented this at a conference.
+\stoptimeline
+
+\heading{\color[red]{int}erests}
+
+\bold{professional:} data analysis, company profiling, risk analysis,
+economics, web design, web app creation, software design, marketing
+\bold{personal:} piano, chess, cooking, dancing, running
+
+\stoptext
