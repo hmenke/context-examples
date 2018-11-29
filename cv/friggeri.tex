@@ -45,11 +45,11 @@
 
 \defineitemgroup
   [timeline]
-  [before={\blank[back]},
+  [before=,
    inbetween=,
    width=6em]
 
-\setuplines[before=,after=]
+\setuplines[before=,after=,command=\strut]
 
 \define[1]\heading{%
   \dontleavehmode{\bfb\setupinterlinespace\strut#1}%
