@@ -1,0 +1,533 @@
+\startbuffer[references]
+  @electronic{LuaTeX-1.0.3,
+    title = {LuaTeX 1.0.3 announcement},
+    author = {Hagen, Hans and Scarso, Luigi and Hoekwater, Taco},
+    year = {2017},
+    howpublished = {\url{https://tug.org/pipermail/luatex/2017-February/006345.html}},
+  }
+  
+  @electronic{LuaJITFFI,
+    title = {LuaJIT: FFI Library},
+    author = {Pall, Mike},
+    year = {2005--2017},
+    howpublished = {\url{http://luajit.org/ext_ffi.html}},
+  }
+
+  @electronic{LuaFFI,
+    title = {LuaFFI},
+    author = {McKaskill, James R.},
+    year = {2011},
+    howpublished = {\url{https://github.com/jmckaskill/luaffi}},
+  }
+  
+  @book{GSL,
+    title = {GNU Scientific Library Reference Manual},
+    author = {Galassi, M. and others},
+    edition = {3},
+    year = {2009},
+    url = {http://www.gnu.org/software/gsl/},
+  }
+
+  @electronic{qag,
+    title = {GNU Scientific Library: Numerical Integration},
+    author = {{The GSL Team}},
+    year = {1996--2017},
+    howpublished = {\url{https://www.gnu.org/software/gsl/doc/html/integration.html}},
+  }
+
+  @book{QUADPACK,
+    title = {Quadpack: A Subroutine Package for Automatic Integration},
+    author = {Piessens, R., Doncker-Kapenga, E. de, Überhuber, C.W., Kahaner, D.K.},
+    publisher = {Springer},
+    year = {1983},
+  }
+
+  @electronic{Rsvg,
+    title = {Answer to \quote{How to include SVG diagrams in LaTeX?}},
+    author = {Menke, Henri},
+    year = {2017},
+    howpublished = {\url{https://tex.stackexchange.com/a/408014}},
+  }
+
+  @electronic{FermiDiracIntegral,
+    title = {Answer to \quote{Plot complete Fermi-Dirac integral in Lualatex}},
+    author = {Menke, Henri},
+    year = {2017},
+    howpublished = {\url{https://tex.stackexchange.com/a/403794}},
+  }
+
+  @electronic{Julia,
+    title = {Interfacing \LUATEX\ with Julia},
+    author = {Mahajan, Aditya},
+    year = {2017},
+    howpublished = {\url{https://adityam.github.io/context-blog/post/interfacing-with-julia/}},
+  }
+
+  @electronic{pgf-fpu,
+    title = {Floating Point Unit Library},
+    author = {Feuersänger, Christian},
+    year = {2015},
+    howpublished = {\url{https://ctan.org/pkg/pgf}},
+  }
+\stopbuffer
+
+\usemodule[tugboat]
+
+\usemodule[pgfplots]
+\pgfplotsset{compat=newest}
+
+% We need these global declaration, so we can scatter the Lua bits
+% over several buffers.
+\startluacode
+ffi = require("ffi")
+gsl = ffi.load("gsl")
+\stopluacode
+
+\definefontfeature
+  [default][default]
+  [protrusion=quality,
+   expansion=quality]
+
+\setupbodyfont[modern]
+
+\setupalign[hz,hanging]
+
+\setuptyping
+  [before={\blank[halfline]},
+   after={\blank[halfline]}]
+
+% Comment this line for a b/w version
+\setupcolors[conversion=no]
+
+\setupmathematics[integral=nolimits]
+
+\usebtxdataset[references.buffer]
+\usebtxdefinitions[aps]
+\setupbtxlist[align={hz,hanging,tolerant}]
+
+\setvariables
+  [tugboat]
+  [type=article,
+   columns=yes,
+   title={Tutorial: Using external C libraries with the \LUATEX\ FFI},
+   author={Henri Menke},
+   address={9016 Dunedin\\New Zealand},
+   email={henrimenke@gmail.com}]
+
+\StartAbstract
+  The recent 1.0.3 release of \LUATEX\ introduced an \acro{FFI}
+  library (Foreign Function Interface) with the same interface as the
+  one included by default in the \LUAJIT\ interpreter.  This allows
+  for interfacing with any external library which adheres to the C
+  calling convention for functions, which is pretty much everything.
+  In this tutorial I will present how to interface with the \acro{GNU}
+  Scientific Library (\acro{GSL}) to calculate integrals numerically.
+  As a showcase I will plot a complete Fermi-Dirac integral using the
+  \type{pgfplots} package.  To understand this article the reader
+  should have good knowledge of the Lua and C programming languages
+  and a basic understanding of the C memory model.
+\StopAbstract
+
+\starttext
+\StartArticle
+
+  \footnotetext{Thanks to Hans Hagen for very useful discussions.}
+
+  \startsection[title={The FFI library}]
+
+    Lua is known for its rich C \acro{API} which allows interfacing
+    with system libraries in a straightforward fashion.  The workflow
+    for that is always the same: Write a function in C which fetches
+    the arguments from the stack of the Lua interpreter and converts
+    them into fixed C types.  Using the fixed-type variables call the
+    library function and receive a result, either as a return value or
+    as an output argument.  The result has to be converted back to a
+    Lua type and pushed onto the stack of the Lua interpreter.  Then
+    hand the control back to the interpreter.
+
+    As we can already see, this recipe involves writing a lot of code,
+    most of which is pure boilerplate.  Wouldn't it be great if there
+    was something which would just do all the type conversion work for
+    us?  And indeed there is, the \acro{FFI} \citation[LuaTeX-1.0.3,
+      LuaJITFFI, LuaFFI].  The concept of a Foreign Function Interface
+    is not exclusive to Lua and also exists in other languages, e.g.\
+    with the \type{ctypes} library for Python.
+
+    Different \acro{FFI}s have different ways of binding library
+    functions.  The Lua \acro{FFI} chooses to parse plain C
+    declarations.  The advantage of this is that when interfacing with
+    C libraries, you can copy and paste function prototypes from the
+    corresponding header files.  Of course, the disadvantage is, that
+    for non-C libraries one has to come up with those prototypes
+    oneself, which is not always an easy task.  The \acro{FORTRAN}
+    language for example does not use the C-style \emph{call by value}
+    convention but always uses \emph{call be reference}; that is to
+    say, all types from a C function prototype would have to be
+    converted to pointer types.
+
+  \stopsection
+
+  \startsection[title={The GNU Scientific Library}]
+
+    The \acro{GNU} Scientific Library (\acro{GSL}) \citation[GSL] is a
+    software library for scientific computing, implementing a broad
+    range of algorithms.  A complete list of algorithms is way too
+    long to be presented here and certainly beyond the scope of this
+    tutorial.  We will only deal with the numerical integration
+    routines here.
+
+    The numerical integration routines in the \acro{GSL} are based on
+    algorithms from the \acro{QUADPACK} \citation[QUADPACK] package
+    for adaptive Gauss-Legendre integration.  In essence, each of the
+    functions computes the integral
+    \placeformula[eq:integral]
+    \startformula
+      I = \int_a^b f(x) w(x) \, dx
+    \stopformula
+    where $w(x)$ is a weight function.  We will only be focussing on
+    the case where the weight function $w(x)=1$.  Since an integral
+    cannot be solved exactly by a computer the user has to provide
+    error bounds to indicate convergence.
+
+  \stopsection
+
+  \startsection[title={Interfacing with the GSL}]
+
+    The first thing to do when we want to interface with an external
+    library is loading the \acro{FFI} modules and using it to load the
+    shared library of interest into memory.
+    \startbuffer[ffi-setup]
+      local ffi = require("ffi")
+      local gsl = ffi.load("gsl")
+    \stopbuffer
+    \ctxluabuffer[ffi-setup]
+    \typebuffer[ffi-setup][option=lua]
+
+    \startsubsection[title={C declarations}]
+
+      Next we have to add all the C declarations which are important
+      for us.  Let us first have a look over the code and then discuss
+      why I wrote things the way they are.
+
+      \startbuffer[cdefs]
+        ffi.cdef[[
+
+        typedef double(*gsl_cb)(double x, void *);
+
+        typedef struct {
+          gsl_cb F;
+          void *params;
+        } gsl_function;
+
+        typedef void gsl_integration_workspace;
+
+        gsl_integration_workspace *
+         gsl_integration_workspace_alloc(size_t n);
+
+        void gsl_integration_workspace_free(
+          gsl_integration_workspace * w);
+
+        int gsl_integration_qagiu(
+          gsl_function *f,
+          double a,
+          double epsabs,
+          double epsrel,
+          size_t limit,
+          gsl_integration_workspace *workspace,
+          double *result,
+          double *abserr);
+        ]]
+      \stopbuffer
+      \ctxluabuffer[cdefs]
+      \typebuffer[cdefs][option=lua]
+
+      The first declaration introduces a new type, which I call
+      \type{gsl_cb}, which stands for \acro{GSL} callback.  It is a
+      pointer to a function which takes a floating point number and a
+      void pointer and returns another floating point number.  In
+      reality, this function pointer will point to a Lua function
+      representing the integrand, i.e.\ $f(x)$ in
+      \in{Eq.}[eq:integral].  We can ignore the unnamed second
+      argument (\type{void *}) here because this is only relevant for
+      the C interface of the \acro{GSL} but we still have to declare
+      it.
+
+      The next declaration is another type declaration, this time with
+      the name \type{gsl_function}.  It is a structure containing two
+      values; the first is the function pointer to the integrand
+      \type{F}, the second a pointer to some memory where parameters
+      could be located.  In our case we will not use the
+      field \type{params} but we nevertheless have to declare it.
+      What is very important is that the order of the fields in the
+      structure is \emph{exactly the same} as in the C header file.
+      Otherwise the memory alignment of the field will be off and a
+      segementation fault will occurr.
+
+      The last type declaration is for the identifier
+      \type{gsl_integration_workspace}, which I simply make an alias
+      for \type{void}.  Actually, when we look in the C header file of
+      the \acro{GSL}, we find that the type
+      \type{gsl_integration_workspace} is defined as a structure with
+      several fields, so why do we not declare those fields?  The
+      reason is simple: we don't care.  As you will see we do not
+      access any fields of \type{gsl_integration_workspace} from the
+      Lua level and the GSL library already knows what the fields are.
+      Therefore I decided to make \type{gsl_integration_workspace}
+      \emph{opaque}.
+
+      The next three declarations are all function declarations which
+      are straight copied from the header file:
+      \type{gsl_integration_workspace_alloc} allocates enough memory
+      to perform integration using \type{n} subintervals;
+      \type{gsl_integration_workspace_free} releases that memory back
+      to the system;  and the third function declaration,
+      \type{gsl_integration_qagiu} is the actual integration routine.
+      It computes the integral of the function \type{f} over the
+      semi-infinite interval from~\type{a} to~$\infty$ with the
+      desired absolute and relative error limits \type{epsabs} and
+      \type{epsrel} using at most \type{limit} subintervals which
+      have been previously allocated in \type{workspace}.  The final
+      approximation and the corresponding absolute error are returned
+      in \type{result} and \type{abserr}~\citation[qag].
+
+    \stopsubsection
+
+    \startsubsection[title={Lua interface}]
+
+      Now that we've declared all of the library functions it is time
+      that we integrate this with Lua.  To this end we write a
+      function which nicely encapsulates all the lower level
+      structure.  The function is named \type{gsl_qagiu} and it takes
+      as parameters a (Lua) function~\type{f} (which takes one argument),
+      the lower limit of the integral~\type{a}, and three optional
+      arguments, the absolute error \type{epsabs}, the relative error
+      \type{epsrel}, and the maximum number of subintervals~\type{N}.
+      
+      \startbuffer[gsl-interface]
+        local gsl_f  = ffi.new("gsl_function")
+        local result = ffi.new("double[1]")
+        local abserr = ffi.new("double[1]")
+
+        function gsl_qagiu(f,a,epsabs,epsrel,N)
+          local N = N or 50
+          local epsabs = epsabs or 1e-8
+          local epsrel = epsrel or 1e-8
+
+          gsl_f.F = ffi.cast("gsl_cb",f)
+          gsl_f.params = nil
+
+          local w =
+             gsl.gsl_integration_workspace_alloc(N)
+
+          gsl.gsl_integration_qagiu(gsl_f, a,
+             epsabs, epsrel, N,
+             w, result, abserr)
+
+          gsl.gsl_integration_workspace_free(w)
+
+          gsl_f.F:free()
+
+          return result[0]
+        end
+      \stopbuffer
+      \ctxluabuffer[gsl-interface]
+      \typebuffer[gsl-interface][option=lua]
+
+      We start by defining some local variables outside the function
+      for better performance.  We instantiate a new value of type
+      \type{gsl_function} and two arrays of length one using the
+      \type{ffi.new} method.
+
+      After processing the optional arguments, we set the fields
+      \type{F} and \type{params}.  This is where it gets interesting.
+      Recall that the type of the field~\type{F} is a pointer to a
+      function which takes two arguments.  Even though the Lua
+      function \type{f} only takes one argument we can use it
+      directly, because of the way Lua deals with optional arguments.
+      If the number of arguments is less than than the number of
+      parameters passed to the function call, all the additional
+      parameters are simply dropped.  The only problem that we have
+      left is the fact that this is clearly a Lua function and not a C
+      function.  To this end we use \type{ffi.cast} to cast the Lua
+      function into a C function.  It can also be converted implicity
+      by simply assigning~\type{f} but then it is less obvious to see
+      what is going on.  At this point it is very important that the
+      types of the arguments and the return value match, otherwise we
+      will run into memory problems.  Because the field \type{params}
+      is unused we simply set it to the null pointer by assigning
+      \type{nil}. (We could probably leave it unset but that is bad
+      practice.  Always initialize your variables!)
+
+      The result and the absolute error of the integration are
+      returned as output arguments from the GSL function, i.e.\ the
+      variables have to have pointer type.  The easiest way to create
+      a pointer to a value is by creating an array of length one of
+      the desired type which we already did outside the function.
+      Arrays can be implicitly cast into pointers but at the same time
+      live on the stack, so we do not have to worry about heap
+      allocation and deallocation.
+
+      Next we use the previously declared functions to first allocate
+      a workspace structure of sufficient size, then call the
+      integration function with all of our arguments, releasing the
+      workspace memory back to the system.  You might notice that not
+      all of the variables in the call to the integration routine have
+      been created using \type{ffi.new}.  This is indeed not necessary
+      because the \acro{FFI} will try to convert Lua values to native
+      C types for you implicitly.  Roughly speaking, you only have to
+      use \type{ffi.new} for non-fundamental types or arrays.
+
+      There is one last sublety to take care of.  The library function
+      to which we passed the function pointer is allowed to store that
+      pointer for later use.  Therefore this pointer will not decrease
+      its reference count after exiting the function and can therefore
+      never be garbage collected.  We are probably not going to call
+      this function so many times that this memory leak will have a
+      huge impact but it is certainly good practice to release
+      resources on exit, so we indicate to the garbage collector that
+      this pointer can be cleaned up by calling its \type{free()}
+      method.
+
+      Finally we return the result which is stored in the first
+      element of the array.  Note that C uses zero-based indexing.
+      
+    \stopsubsection
+
+    \startsubsection[title={Usage in pgfplots}]
+
+      So far we have been only implementing some kind of abstract
+      skeleton for numerical integration.  Now it is definitely time
+      to actually use it.  To this end we aim to plot the following
+      complete Fermi-Dirac integral.
+      \placeformula
+      \startformula
+        F_{1/2}(t) = \int_0^\infty \frac{x^{1/2}}{e^{x-t}+1} dx .
+      \stopformula
+      What we will do now is call the \type{gsl_qagiu} routine with
+      the integrand as the first argument and the lower limit as the
+      second argument.  Because we want to obtain the result of the
+      integration in \TeX\ we do not return the result of the
+      integration but feed it back to \TeX\ using \type{tex.sprint}.
+
+      \startbuffer[pgfplots-prototype]
+        function F_one_half(t)
+          tex.sprint(gsl_qagiu(function(x)
+              return math.sqrt(x)/(math.exp(x-t)+1)
+            end, 0))
+        end
+      \stopbuffer
+      \ctxluabuffer[pgfplots-prototype]
+      \typebuffer[pgfplots-prototype][option=lua]
+
+      The last thing to do is plotting this function using
+      \type{pgfplots}.  In the following I use \ConTeXt\ syntax but
+      the \TeX\ and \LaTeX\ syntax is very similar.  It should be
+      noted at this point, that for the \acro{FFI} to work in \LaTeX,
+      the \type{--shell-escape} option has to be enabled, because
+      these operations are considered unsafe.  First of all we need to
+      tell Ti\italic{k}Z about the Lua function.  We do this using
+      \type{declare function} and simply calling the Lua function with
+      the argument (A \LaTeX\ user would use \type{\directlua} instead
+      of \type{\ctxlua}).  There is still a slight problem.  The
+      \type{pgfplots} package uses its own representation for floating
+      point numbers, called \type{fpu} \citation[pgf-fpu], which is
+      not compatible with Lua.  There are ways to work around this
+      (see the Appendix), but the simplest solution for the moment is
+      turning off the \type{fpu} for this plot.
+
+      \startbuffer[pgfplots-example]
+        \starttikzpicture[
+          declare function={
+            F_one_half(\t) = \ctxlua{F_one_half(\t)};
+          }
+        ]
+          \startaxis[
+            use fpu=false, % very important!
+            width=6cm, no marks, samples=101,
+            xlabel={$t$}, ylabel={$F_{1/2}(t)$},
+          ]
+            \addplot {F_one_half(x)};
+          \stopaxis
+        \stoptikzpicture
+      \stopbuffer
+      \typebuffer[pgfplots-example][option=tex]
+      \startalignment[middle]
+        \dontleavehmode\forcecolorhack % TikZ and ConTeXt are not good friends
+        \getbuffer[pgfplots-example]
+      \stopalignment
+
+    \stopsubsection
+
+  \stopsection
+
+  \startsection[title={Conclusion}]
+
+    The availability of \acro{FFI} in \LUATEX\ takes document
+    processing to a completely new level.  The possibility to
+    interface with native C libraries can be used to perform tasks
+    which were previously untracktable, like the numerical integration
+    in this tutorial.  This article was inspired by a question asked
+    on Stack Exchange where a minimal working example of the
+    techniques presented here can be
+    found~\citation[FermiDiracIntegral].  Another example would be the
+    conversion of an image from \acro{SVG} format to \acro{PDF}
+    without the generation of intermediate files, as I demonstrated in
+    \citation[Rsvg] using the Cairo and Rsvg-2 libraries, and recently
+    Aditya Mahajan published an article on his \CONTEXT\ blog on how
+    to interface the Julia programming language with \LUATEX\ via the
+    \acro{FFI} \citation[Julia].
+    
+  \stopsection
+
+  \startsection[title={Appendix},reference={sec:appendix}]
+
+    During the preparation of this manuscript I was made aware, by
+    Aditya Mahajan, that the approach of turing off the \type{fpu} is
+    not always a viable workaround; it can fail, for instance when
+    trying to plot in logscale.  Therefore one has to convert the
+    function argument from \type{fpu} float to Lua number and the
+    result from Lua number to \type{fpu} float.  Fortunately
+    \acro{PGF} provides macros to facilitate this conversion.  Using
+    those one can declare the function from the main text like such:
+    \startbuffer[fpu-conversion-tex]
+      \pgfmathdeclarefunction{F_one_half}{1}{%
+        \pgfmathfloatparsenumber{%
+          \ctxlua{
+            F_one_half(\pgfmathfloatvalueof{#1})
+          }%
+        }%
+      }
+    \stopbuffer
+    \getbuffer[fpu-conversion-tex] % just to check it's working
+    \typebuffer[fpu-conversion-tex][option=tex]
+
+    One does not necessarily have to rely on the macro level here.
+    Since version 3 the \acro{PGF} package comes with a Lua backend for
+    function evaluations which provides parser functions for
+    \type{fpu} types.  With this, one could adapt the Lua function
+    from the main text as follows:
+    \startbuffer[fpu-conversion-lua]
+      local plf = require"pgf.luamath.functions"
+
+      function F_one_half(t)
+        local t = plf.tonumber(t)
+        local result = gsl_qagiu(function(x)
+           return math.sqrt(x)/(math.exp(x-t)+1)
+          end, 0))
+        tex.sprint(plf.toTeXstring(result))
+      end
+    \stopbuffer
+    \ctxluabuffer[fpu-conversion-lua] % just to check it's working
+    \typebuffer[fpu-conversion-lua][option=lua]
+
+  \stopsection
+
+  \startsubject[title={References}]
+    \placelistofpublications
+  \stopsubject
+  
+\StopArticle
+\stoptext
+
+
+%https://tug.org/pipermail/luatex/2017-February/006345.html
