@@ -209,7 +209,8 @@ contact with the ConTeXt core and are wondering what all those weird
     - [MkIV Hybrid Technology][hybrid]
     - [about LuaTeX and ConTeXt][about]
     - [Still going on][still]
-    - [on and on][onandon] (current working report)
+    - [on and on][onandon]
+    - [following up][followingup] (current working report)
 
     [The history of LuaTeX][mk] has mostly historical relevance
     because a lot of features described in there are documented
@@ -227,6 +228,7 @@ contact with the ConTeXt core and are wondering what all those weird
 [about]: http://www.pragma-ade.nl/general/manuals/about.pdf
 [still]: http://www.pragma-ade.nl/general/manuals/still.pdf
 [onandon]: http://www.pragma-ade.nl/general/manuals/onandon.pdf
+[followingup]: http://www.pragma-ade.nl/general/manuals/followingup.pdf
 
 - **[Dealing with XML in ConTeXt MkIV][xml-mkiv]** ConTeXt can export
     documents to XML.  This is possible thanks to the monolithic core
