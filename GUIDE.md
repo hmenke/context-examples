@@ -51,13 +51,15 @@ here is how.
 2. **[Creating a clean presentation style in 40 commits][40-commits]**
     An amazing tutorial by Aditya Mahajan where a set of presentation
     slides is built step by step.  You can either browse the commits
-    on GitHub or use the `git-walk` tool.  Instructions are provided
-    on [Aditya's blog][blog-post].  This tutorial equipped me with the
+    on GitHub, use the `git-walk` tool (instructions provided
+    on [Aditya's blog][blog-post]), or view all the details [on a single page][one-page].
+    This tutorial equipped me with the
     basic understanding of how to customize the most relevant elements
     of the document.
 
 [40-commits]: https://github.com/adityam/context-slides-example
 [blog-post]: https://adityam.github.io/context-blog/post/presentation-40-commits/
+[one-page]: https://adityam.github.io/context-blog/post/presentation-40-commits-redux/
 
 3. **[ConTeXt command reference][setups]** Now that you know how to
     customize your documents, you of course want to try out all the
