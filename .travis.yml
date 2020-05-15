@@ -1,6 +1,6 @@
 language: generic
 services: docker
-script: docker run -v ${TRAVIS_BUILD_DIR}:/travis -w /travis -it contextgarden/beta ./build.sh
+script: docker run -v ${TRAVIS_BUILD_DIR}:/travis -w /travis -it registry.gitlab.com/islandoftex/images/context:beta ./build.sh
 
 before_deploy:
   - git config --local user.name "Travis CI"
