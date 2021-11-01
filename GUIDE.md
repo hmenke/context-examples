@@ -1,4 +1,4 @@
-# The definitive guide to ConTeXt MkIV documentation
+# The definitive guide to ConTeXt MkIV and LMTX documentation
 
 On the [mailing list][list] (sign up, do it!) and on [TeX - LaTeX
 Stack Exchange][texsx] (*abbr.:* TeX.SX) I often read the complaint
@@ -24,14 +24,29 @@ moving targets anyway.
 
 ## Introductory material
 
-This is the part of the documentation where ConTeXt is indeed
-seriously lacking.  There seems to be no good and complete
-introductory book for ConTeXt, while there exist literally hundreds of
+This is the part of the documentation where ConTeXt is indeed seriously
+lacking.  There does not exist much in terms of good and complete
+introductory books for ConTeXt, while there exist literally hundreds of
 more or less good books for [LaTeX][latex-docs].  But do not despair,
 there is still a way for a beginner to start getting into ConTeXt and
 here is how.
 
 [latex-docs]: https://tex.stackexchange.com/questions/11
+
+1. **[A not so short introduction to ConTeXt][introCTX]** This introductory text
+   was originally created by Joaquín Ataz-López in Spanish but has since been
+   translated as a community effort into several different languages.  The book
+   does not assume that the reader knows anythin about TeX/LaTeX/ConTeXt, so for
+   already experienced readers it might be going a bit slow in the beginning.
+   Other than that it is exactly what you would expect from an introductory
+   textbook, as it has plenty of examples and goes into both depth and breadth
+   with a large number of ConTeXt features that are accessible from the macro
+   level.
+
+[introCTX]: https://github.com/contextgarden/not-so-short-introduction-to-context
+
+When I first studied ConTeXt this book did not exist yet and I had to resort to
+other resources which even in hindsight I still consider very valuable:
 
 1. **[ConTeXt Mark IV an excursion][ma-cb-en]** This is the successor
     of [ConTeXt an excursion][mp-cb-en] which is often put forward as
@@ -207,23 +222,23 @@ contact with the ConTeXt core and are wondering what all those weird
     documents these features in his progress reports on LuaTeX and
     ConTeXt development.  In chronological order these are:
 
-    - [The history of LuaTeX][mk]
-    - [MkIV Hybrid Technology][hybrid]
-    - [about LuaTeX and ConTeXt][about]
-    - [Still going on][still]
-    - [on and on][onandon]
-    - [following up][followingup] (current working report)
+    1. [The history of LuaTeX][mk]
+    2. [MkIV Hybrid Technology][hybrid]
+    3. [about LuaTeX and ConTeXt][about]
+    4. [Still going on][still]
+    5. [on and on][onandon]
+    6. [following up][followingup]
+    6. [on target][ontarget] (current working report)
 
     [The history of LuaTeX][mk] has mostly historical relevance
     because a lot of features described in there are documented
     elsewhere in much more detail, like [OpenType fonts][fonts-mkiv],
     [Metafun][metafun], and [XML][xml-mkiv].
 
-    The other documents give a very in-depth view of all the internals
-    of ConTeXt MkIV and it is definitely worth skimming through them
-    to see what is available.  Whenever I open these manuals and read
-    a few paragraphs I find new hidden features.
-
+    The other documents give a very in-depth view of all the internals of
+    ConTeXt MkIV and LMTX and it is definitely worth skimming through them to
+    see what is available.  Whenever I open these manuals and read a few
+    paragraphs I find new hidden features.
 
 [mk]: http://www.pragma-ade.nl/general/manuals/mk.pdf
 [hybrid]: http://www.pragma-ade.nl/general/manuals/hybrid.pdf
@@ -231,6 +246,7 @@ contact with the ConTeXt core and are wondering what all those weird
 [still]: http://www.pragma-ade.nl/general/manuals/still.pdf
 [onandon]: http://www.pragma-ade.nl/general/manuals/onandon.pdf
 [followingup]: http://www.pragma-ade.nl/general/manuals/followingup.pdf
+[ontarget]: http://www.pragma-ade.nl/general/manuals/ontarget.pdf
 
 - **[Dealing with XML in ConTeXt MkIV][xml-mkiv]** ConTeXt can export
     documents to XML.  This is possible thanks to the monolithic core
@@ -240,14 +256,15 @@ contact with the ConTeXt core and are wondering what all those weird
 
 [xml-mkiv]: http://www.pragma-ade.nl/general/manuals/xml-mkiv.pdf
 
-- **[LuaTeX][luatex]** Because the relationship between ConTeXt MkIV
-    and LuaTeX is so close it is absolutely necessary for the expert
-    user to know the details of the underlying engine.  The link
-    points to the LuaTeX manual hosted on Pragma ADE which always
-    covers the latest development version used as a basis for ConTeXt
-    MkIV.
+- **[LuaTeX][luatex] and [LuaMetaTeX][luametatex]** Because the relationship
+    between ConTeXt MkIV and Lua(Meta)TeX is so close it is absolutely necessary
+    for the expert user to know the details of the underlying engine.  The links
+    point to the LuaTeX and LuaMetaTeX manuals hosted on Pragma ADE which always
+    covers the latest development version used as a basis for ConTeXt MkIV and
+    LMTX, respectively.
 
 [luatex]: http://www.pragma-ade.nl/general/manuals/luatex.pdf
+[luametatex]: http://www.pragma-ade.nl/general/manuals/luametatex.pdf
 
 ---
 
