@@ -1,0 +1,72 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: registry.gitlab.com/islandoftex/images/context:beta
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+
+    - name: "build"
+      run: |
+        set -eu
+
+        # Install dependencies
+        apt-get update
+        apt-get install -qq libgsl-dev
+
+        # Compile all files
+        find -name '*.tex' | xargs -I{} bash -c '
+            set -euo pipefail
+            cd "$(dirname "{}")"
+            context --nonstopmode "$(basename "{}")"
+        '
+
+    - name: "release"
+      uses: actions/create-release@v1
+      id: create_release
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.run_number }}
+        release_name: ${{ github.run_number }}
+
+    - name: "deploy"
+      uses: actions/github-script@v5
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          const { basename, extname, resolve } = require('path');
+          const { readdir, readFile, stat } = require('fs').promises;
+          async function* getFiles(directoryPath) {
+              const directory = await readdir(directoryPath, { withFileTyes: true });
+              for (const entry of directory) {
+                  const path = resolve(directoryPath, entry);
+                  if ((await stat(path)).isDirectory()) {
+                      yield* getFiles(path);
+                  } else {
+                      yield path;
+                  }
+              }
+          }
+
+          const release_id = '${{ steps.create_release.outputs.id }}'
+          console.log('Release ID:', release_id)
+          for await (const file of getFiles('./')) {
+              if (extname(file) === '.pdf') {
+                  console.log('uploadReleaseAsset', file)
+                  await github.rest.repos.uploadReleaseAsset({
+                      owner: context.repo.owner,
+                      repo: context.repo.repo,
+                      release_id: release_id,
+                      name: basename(file),
+                      data: await readFile(file)
+                  });
+              }
+          }
