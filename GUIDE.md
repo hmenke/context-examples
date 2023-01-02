@@ -35,8 +35,8 @@ here is how.
 
 1. **[A not so short introduction to ConTeXt][introCTX]** This introductory text
    was originally created by Joaquín Ataz-López in Spanish but has since been
-   translated as a community effort into several different languages.  The book
-   does not assume that the reader knows anythin about TeX/LaTeX/ConTeXt, so for
+   translated as a community effort into several languages.  The book
+   does not assume that the reader knows anything about TeX/LaTeX/ConTeXt, so for
    already experienced readers it might be going a bit slow in the beginning.
    Other than that it is exactly what you would expect from an introductory
    textbook, as it has plenty of examples and goes into both depth and breadth
@@ -81,14 +81,14 @@ other resources which even in hindsight I still consider very valuable:
     different settings.  But wait, what are actually *all* the
     settings?  What are the possible keys of, e.g. `\setuphead`?  That
     is where the ConTeXt command reference comes in.  This extremely
-    minimalistic document is the most helpful I have encountered so
+    minimalist document is the most helpful I have encountered so
     far.  On over 300 pages every setup command with all accepted keys
     is listed.
 
 [setups]: http://www.pragma-ade.nl/general/qrcs/setup-en.pdf
 
 This concludes the section on introductory material.  From here on we
-dive into more complicated topics.  Nevertheless after reading the
+dive into more complicated topics.  Nevertheless, after reading the
 references (1) and (2) and having (3) at hand you should be able to
 compose your first documents.
 
@@ -110,7 +110,7 @@ contact with the ConTeXt core and are wondering what all those weird
 
 ### Fonts
 
-- **[Fonts out of ConTeXt][fonts-mkiv]** a.k.a “the new font manual”
+- **[Fonts out of ConTeXt][fonts-mkiv]** a.k.a. “the new font manual”
     supersedes the old [Fonts chapter][co-fonts].  Once in a while you
     want to tweak things like ligatures, kerning, protrusion, or even
     want to do complicated things like defining a virtual font to
@@ -201,7 +201,7 @@ contact with the ConTeXt core and are wondering what all those weird
     visual guide to all the cool features which made you switch from
     LaTeX to ConTeXt, namely grid typesetting and sidefloats.  As
     already noted, this is a visual guide and not really a manual
-    which explains a lot of things.  Rather it lists different options
+    which explains a lot of things.  Rather, it lists different options
     and shows the visual effects of setting those options.
 
 [details]: http://www.pragma-ade.nl/general/manuals/details.pdf
